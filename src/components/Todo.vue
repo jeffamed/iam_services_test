@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="flex justify-between">
-      <Input placeholder="Search"/>
-      <button class="bg-sky-500 hover:bg-sky-700 h-10 py-2 px-4 my-5 text-md text-white rounded font-bold" @click="modal = true">Add New</button>
+      <input type="text" placeholder="Search" class="border border-black m-5 p-3 h-10 w-4/12" v-model="search">
+      <button class="bg-sky-600 hover:bg-sky-700 h-10 py-2 px-4 my-5 text-md text-white rounded font-bold" @click="modal = true">Add New</button>
     </div>
     <div>
       <table class="w-full table-auto">
         <thead>
         <tr class="border-b border-black">
-          <th>Todo</th>
+          <th>ToDo</th>
           <th>Text</th>
           <th>Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr class="py-5"  v-for="todo in todos" :key="todo.id">
+        <tr class="py-5"  v-for="todo in info" :key="todo.id">
           <td class="py-4 border-b">{{ todo.name }}</td>
           <td class="py-4 border-b">{{ todo.text }}</td>
           <td class="py-4 border-b"><button class="text-red-500 hover:text-red-700" @click="remove(todo.id)"><i class="fa fa-trash fa-lg"></i></button></td>
@@ -28,21 +28,26 @@
 </template>
 
 <script>
-import Input from "./Input";
 import Modal from "./Modal";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {useTodo} from "../composables/useTodo";
 
 export default {
   name: "Todo",
   components: {
-    Input,
     Modal
   },
   setup(){
     const modal = ref(false);
+    const search = ref('');
 
     const {getTodos, saveTodo, deleteTodo, todos} = useTodo();
+
+    const info = computed(() => {
+      return Object.values(todos.value).filter(item => {
+        return item.name.toLowerCase().includes(search.value.toLowerCase());
+      })
+    })
 
     const save = (data) => {
       saveTodo(data);
@@ -55,7 +60,7 @@ export default {
     }
 
     getTodos();
-    return { modal, todos, save, remove }
+    return { modal, save, remove, search, info}
   }
 }
 </script>

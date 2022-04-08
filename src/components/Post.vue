@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-between">
-    <Input placeholder="Search"/>
-    <button class="bg-sky-500 hover:bg-sky-700 h-10 py-2 px-4 my-5 text-md text-white rounded font-bold" @click="modal = true">Add New</button>
+    <input type="text" placeholder="Search" class="border border-black m-5 p-3 h-10 w-4/12" v-model="search">
+    <button class="bg-sky-600 hover:bg-sky-700 h-10 py-2 px-4 my-5 text-md text-white rounded font-bold" @click="modal = true">Add New</button>
   </div>
   <div>
     <table class="w-full table-auto">
@@ -14,7 +14,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr class="py-5" v-for="post in posts" :key="post.id">
+      <tr class="py-5" v-for="post in info" :key="post.id">
         <td class="py-4 border-b" >{{ post.name }}</td>
         <td class="py-4 border-b">{{ post.text }}</td>
         <td class="py-4 border-b">{{ post.email }}</td>
@@ -28,20 +28,25 @@
 </template>
 
 <script>
-import Input from "./Input";
 import Modal from "./Modal";
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import { usePosts } from "../composables/usePosts";
 
 export default {
   name: "Post",
   components: {
-    Modal,
-    Input
+    Modal
   },
   setup(){
     const modal = ref(false);
+    const search = ref('');
     const {getPosts, savePost, deletePost, posts} = usePosts();
+
+    const info = computed(() => {
+      return Object.values(posts.value).filter(item => {
+          return item.name.toLowerCase().includes(search.value.toLowerCase());
+      })
+    })
 
     const remove = (id) => {
       let response = confirm("Esta seguro de eliminar el post?")
@@ -54,7 +59,7 @@ export default {
     }
 
     getPosts();
-    return {modal, posts, save, remove}
+    return {modal, save, remove, search, info}
   }
 }
 </script>

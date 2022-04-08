@@ -18,7 +18,7 @@
     </div>
     <button type="submit" class="bg-amber-500 hover:bg-amber-700 h-10 py-2 px-4 my-5 text-md text-white rounded font-bold">Actualizar</button>
   </form>
-  <span v-show="alert" class="bg-green-100 border border-green-300 block font-bold mx-auto py-1 rounded text-green-600 w-11/12">Actualizado Exitosamente</span>
+  <span v-show="alert" class="bg-green-100 border border-green-300 block font-bold mx-auto py-1 rounded text-green-600 w-11/12">info was saved successfully</span>
 </template>
 
 <script>
