@@ -7,12 +7,12 @@
           <button type="button" class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm p-2" @click="closeModal">X</button>
         </div>
         <div class="flex">
-          <input type="text" placeholder="name" class="border border-black my-5 mx-5 p-3 h-10 w-5/12">
-          <input v-if="email" type="email" placeholder="email" class="border border-black my-5 mx-5 p-3 h-10 w-5/12">
-          <input type="text" placeholder="text" class="border border-black my-5 mx-5 p-3 h-10 w-5/12">
+          <input type="text" placeholder="name" class="border border-black my-5 mx-5 p-3 h-10 w-5/12" v-model="form.name">
+          <input v-if="email" type="email" placeholder="email" class="border border-black my-5 mx-5 p-3 h-10 w-5/12" v-model="txtEmail">
+          <input type="text" placeholder="text" class="border border-black my-5 mx-5 p-3 h-10 w-5/12" v-model="form.text">
         </div>
         <div class="flex items-center justify-end p-6 rounded-b border-t border-gray-200">
-          <button data-modal-toggle="defaultModal" type="button" class="text-white bg-green-700 hover:bg-green-800 h-10 py-2 px-5 text-md text-white rounded font-bold">Save</button>
+          <button type="button" class="text-white bg-green-700 hover:bg-green-800 h-10 py-2 px-5 text-md text-white rounded font-bold" @click="saveData()">Save</button>
         </div>
       </div>
     </div>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import {reactive, ref} from "vue";
+
 export default {
   name: "Modal",
   props:{
@@ -39,11 +41,31 @@ export default {
     }
   },
   setup(props, context){
+    const form = reactive({
+      name: '',
+      text: '',
+    })
+    const txtEmail = ref('');
+
     const closeModal = () => {
-      context.emit('close')
+      context.emit('close');
+      clearForm();
     }
 
-    return { closeModal };
+    const saveData = () => {
+      if (props.title === 'Post')
+        form.email = txtEmail.value
+
+      context.emit('save', form);
+      clearForm();
+    }
+
+    const clearForm = () => {
+      form.name = '';
+      form.text = '';
+      txtEmail.value = '';
+    }
+    return { closeModal, saveData, form, txtEmail };
   }
 }
 </script>

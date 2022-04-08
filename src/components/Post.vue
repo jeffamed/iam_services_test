@@ -14,23 +14,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr class="py-5">
-        <td class="py-4 border-b">Pull on the trash</td>
-        <td class="py-4 border-b">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit, molestias!</td>
-        <td class="py-4 border-b">example22_post@emial.com</td>
-        <td class="py-4 border-b"><button class="text-red-500 hover:text-red-700"><i class="fa fa-trash fa-lg"></i></button></td>
+      <tr class="py-5" v-for="post in posts" :key="post.id">
+        <td class="py-4 border-b" >{{ post.name }}</td>
+        <td class="py-4 border-b">{{ post.text }}</td>
+        <td class="py-4 border-b">{{ post.email }}</td>
+        <td class="py-4 border-b"><button class="text-red-500 hover:text-red-700" @click="remove(post.id)"><i class="fa fa-trash fa-lg"></i></button></td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <Modal :modal="modal" title="Post" email="true" @close="modal = false"/>
+  <Modal :modal="modal" title="Post" email="true" @close="modal=false" @save="save"/>
 </template>
 
 <script>
 import Input from "./Input";
-import {ref} from "vue";
 import Modal from "./Modal";
+import { ref } from "vue";
+import { usePosts } from "../composables/usePosts";
 
 export default {
   name: "Post",
@@ -40,8 +41,20 @@ export default {
   },
   setup(){
     const modal = ref(false);
+    const {getPosts, savePost, deletePost, posts} = usePosts();
 
-    return {modal}
+    const remove = (id) => {
+      let response = confirm("Esta seguro de eliminar el post?")
+      if(response)
+        deletePost(id);
+    }
+
+    const save = (data) => {
+      savePost(data);
+    }
+
+    getPosts();
+    return {modal, posts, save, remove}
   }
 }
 </script>
